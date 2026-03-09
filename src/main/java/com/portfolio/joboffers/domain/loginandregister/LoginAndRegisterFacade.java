@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 public class LoginAndRegisterFacade {
     private final UserRepository userRepository;
 
-    Long register(final UserDto userDto) {
+    public Long register(final UserDto userDto) {
         if(userDto.username().isEmpty() || userDto.password().isEmpty()) {
             throw new UserRegistrationException("Failed to register user");
         }
@@ -15,7 +15,7 @@ public class LoginAndRegisterFacade {
         return userRepository.save(user);
     }
 
-    String login(final UserDto userDto){
+    public String login(final UserDto userDto){
         var user = userRepository.findByUsername(userDto.username());
 
         if(user.isEmpty()){
