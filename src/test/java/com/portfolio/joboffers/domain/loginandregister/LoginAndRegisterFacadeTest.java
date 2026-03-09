@@ -41,13 +41,24 @@ class LoginAndRegisterFacadeTest {
     }
 
     @Test
-    public void should_throw_exception_when_user_doesnt_exist_in_database() {
+    public void should_throw_exception_when_user_does_not_exist_in_database() {
         //given
         LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterFacade(new InMemoryUserRepositoryImpl());
         UserDto testUser = new UserDto("testuser", "12345");
         //when
         //then
         assertThrows(UsernameNotFoundException.class, () -> loginAndRegisterFacade.login(testUser));
+    }
 
+    @Test
+    public void should_throw_exception_when_password_is_incorrect(){
+        //given
+        LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterFacade(new InMemoryUserRepositoryImpl());
+        UserDto testUser = new UserDto("testuser", "12345");
+        UserDto testUserWithBadPassword = new UserDto("testuser", "123456");
+        loginAndRegisterFacade.register(testUser);
+        //when
+        //then
+        assertThrows(IncorrectPasswordException.class ,() -> loginAndRegisterFacade.login(testUserWithBadPassword));
     }
 }

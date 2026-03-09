@@ -21,6 +21,11 @@ public class LoginAndRegisterFacade {
         if(user.isEmpty()){
             throw new UsernameNotFoundException("Username not found");
         }
+
+        if(!user.get().password().equals(userDto.password())){
+            throw new IncorrectPasswordException("Bad password");
+        }
+
         return "success";
     }
 }
