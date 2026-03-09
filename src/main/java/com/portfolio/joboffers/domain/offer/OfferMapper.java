@@ -9,4 +9,13 @@ class OfferMapper {
                 .offerUrl(dto.offerUrl())
                 .build();
     }
+
+    static OfferDto mapOfferToOfferDto(Offer offer){
+        return OfferDto.builder()
+                .company(offer.company())
+                .position(offer.position())
+                .salary(offer.salary())
+                .offerUrl(offer.offerUrl())
+                .build();
+    }
 }

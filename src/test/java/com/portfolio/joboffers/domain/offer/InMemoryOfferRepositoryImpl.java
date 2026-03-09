@@ -1,7 +1,9 @@
 package com.portfolio.joboffers.domain.offer;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 class InMemoryOfferRepositoryImpl implements OfferRepository{
@@ -13,5 +15,17 @@ class InMemoryOfferRepositoryImpl implements OfferRepository{
         long id = sequence_pos.getAndIncrement();
         db.put(id, offer);
         return id;
+    }
+
+    @Override
+    public List<Offer> findAll() {
+        return db.values()
+                .stream()
+                .toList();
+    }
+
+    @Override
+    public Optional<Offer> findById(Long id) {
+        return Optional.ofNullable(db.get(id));
     }
 }
