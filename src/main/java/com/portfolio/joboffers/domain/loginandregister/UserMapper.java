@@ -7,4 +7,11 @@ class UserMapper {
                 .password(userDto.password())
                 .build();
     }
+
+    static UserDto mapUserToUserDto(final User user){
+        return UserDto.builder()
+                .username(user.username())
+                .password(user.password())
+                .build();
+    }
 }

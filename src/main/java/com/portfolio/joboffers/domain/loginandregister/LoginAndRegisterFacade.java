@@ -1,6 +1,7 @@
 package com.portfolio.joboffers.domain.loginandregister;
 
 import lombok.AllArgsConstructor;
+import static com.portfolio.joboffers.domain.loginandregister.UserMapper.*;
 
 @AllArgsConstructor
 public class LoginAndRegisterFacade {
@@ -11,21 +12,17 @@ public class LoginAndRegisterFacade {
             throw new UserRegistrationException("Failed to register user");
         }
 
-        User user = UserMapper.mapUserDtoToUser(userDto);
+        User user = mapUserDtoToUser(userDto);
         return userRepository.save(user);
     }
 
-    public String login(final UserDto userDto){
-        var user = userRepository.findByUsername(userDto.username());
+    public UserDto findByUsername(final String username){
+        var user = userRepository.findByUsername(username);
 
         if(user.isEmpty()){
             throw new UsernameNotFoundException("Username not found");
         }
 
-        if(!user.get().password().equals(userDto.password())){
-            throw new IncorrectPasswordException("Bad password");
-        }
-
-        return "success";
+        return mapUserToUserDto(user.get());
     }
 }

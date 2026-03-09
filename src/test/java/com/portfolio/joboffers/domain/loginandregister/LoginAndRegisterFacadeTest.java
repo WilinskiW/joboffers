@@ -35,9 +35,10 @@ class LoginAndRegisterFacadeTest {
         UserDto testUser = new UserDto("testuser", "12345");
         loginAndRegisterFacade.register(testUser);
         //when
-        String outcome = loginAndRegisterFacade.login(testUser);
+        UserDto userDto = loginAndRegisterFacade.findByUsername(testUser.username());
         //then
-        assertThat(outcome).isEqualTo("success");
+        assertThat(userDto.username()).isEqualTo("testuser");
+        assertThat(userDto.password()).isEqualTo("12345");
     }
 
     @Test
@@ -46,21 +47,8 @@ class LoginAndRegisterFacadeTest {
         LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterFacade(new InMemoryUserRepositoryImpl());
         UserDto testUser = new UserDto("testuser", "12345");
         //when & then
-        assertThatThrownBy(() -> loginAndRegisterFacade.login(testUser))
+        assertThatThrownBy(() -> loginAndRegisterFacade.findByUsername(testUser.username()))
                 .isInstanceOf(UsernameNotFoundException.class)
                 .hasMessage("Username not found");
-    }
-
-    @Test
-    public void should_throw_exception_when_password_is_incorrect(){
-        //given
-        LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterFacade(new InMemoryUserRepositoryImpl());
-        UserDto testUser = new UserDto("testuser", "12345");
-        UserDto testUserWithBadPassword = new UserDto("testuser", "123456");
-        loginAndRegisterFacade.register(testUser);
-        //when & then
-        assertThatThrownBy(() -> loginAndRegisterFacade.login(testUserWithBadPassword))
-                .isInstanceOf(IncorrectPasswordException.class)
-                .hasMessage("Bad password");
     }
 }
