@@ -9,4 +9,6 @@ interface OfferRepository {
     List<Offer> findAll();
 
     Optional<Offer> findById(Long id);
+
+    boolean existByUrl(String url);
 }

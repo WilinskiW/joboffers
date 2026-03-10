@@ -28,4 +28,11 @@ class InMemoryOfferRepositoryImpl implements OfferRepository{
     public Optional<Offer> findById(Long id) {
         return Optional.ofNullable(db.get(id));
     }
+
+    @Override
+    public boolean existByUrl(final String url) {
+        return db.values()
+                .stream()
+                .anyMatch(offer -> offer.offerUrl().equals(url));
+    }
 }
