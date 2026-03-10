@@ -2,7 +2,7 @@ package com.portfolio.joboffers.domain.offer;
 
 import java.util.List;
 
-public class MockOfferClientImpl implements OfferFetchable{
+class MockOfferClientImpl implements OfferFetchable{
     @Override
     public List<OfferDto> fetch() {
         OfferDto testOffer = OfferDto.builder()

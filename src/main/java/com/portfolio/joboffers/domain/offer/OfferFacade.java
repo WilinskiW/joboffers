@@ -4,49 +4,27 @@ import lombok.AllArgsConstructor;
 
 import java.util.List;
 
-import static com.portfolio.joboffers.domain.offer.OfferMapper.*;
-
 @AllArgsConstructor
 public class OfferFacade {
-    private final OfferRepository repository;
-    private final OfferFetchable client;
+    private final OfferAdder adder;
+    private final OfferRetriever retriever;
+    private final OfferFetcher fetcher;
 
     public Long saveOffer(OfferDto offerDto){
-        String url = offerDto.offerUrl();
-        if(repository.existByUrl(url)){
-            throw new OfferAlreadyExistException("Offer with url: " + url + " already exist");
-        }
-        Offer offerToSave = mapOfferDtoToOffer(offerDto);
-        return repository.save(offerToSave);
+        return adder.addOffer(offerDto);
     }
 
     public List<OfferDto> findAllOffers(){
-        return repository.findAll().stream()
-                .map(OfferMapper::mapOfferToOfferDto)
-                .toList();
+        return retriever.findAllOffers();
     }
 
     public OfferDto findOfferById(final Long id) {
-        Offer offer = repository.findById(id)
-                .orElseThrow(() -> new OfferNotFoundException("Offer with id: " + id + " not found"));
-
-        return mapOfferToOfferDto(offer);
+        return retriever.findOfferById(id);
     }
 
     public List<OfferDto> fetchAllOffersAndSaveAllIfNotExists() {
-        List<OfferDto> offersToSave = client.fetch()
-                .stream()
-                .filter(offer -> !repository.existByUrl(offer.offerUrl()))
-                .toList();
-        saveAll(offersToSave);
+        List<OfferDto> offersToSave = fetcher.fetchNewOffer();
+        adder.saveAll(offersToSave);
         return offersToSave;
-    }
-
-    private void saveAll(List<OfferDto> offers){
-        List<Offer> offersToSave = offers.stream()
-                .map(OfferMapper::mapOfferDtoToOffer)
-                .toList();
-
-        offersToSave.forEach(repository::save);
     }
 }

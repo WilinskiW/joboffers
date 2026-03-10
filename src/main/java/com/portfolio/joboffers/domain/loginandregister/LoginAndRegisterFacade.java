@@ -12,7 +12,7 @@ public class LoginAndRegisterFacade {
             throw new UserRegistrationException("Failed to register user");
         }
 
-        User user = mapUserDtoToUser(userDto);
+        var user = mapUserDtoToUser(userDto);
         return userRepository.save(user);
     }
 

@@ -9,10 +9,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JobOffersFacadeTest {
+
     @Test
     public void should_save_offer_when_url_is_unique(){
         //given
-        OfferFacade offerFacade = new OfferFacade(new InMemoryOfferRepositoryImpl(), new MockOfferClientImpl());
+        OfferFacade offerFacade = OfferFacadeConfiguration.createForTest(new InMemoryOfferRepositoryImpl(), new MockOfferClientImpl());
         OfferDto testOffer = OfferDto.builder()
                 .company("Company")
                 .position("Dev")
@@ -28,7 +29,7 @@ class JobOffersFacadeTest {
     @Test
     public void should_throw_exception_when_url_exist_in_database(){
         //given
-        OfferFacade offerFacade = new OfferFacade(new InMemoryOfferRepositoryImpl(), new MockOfferClientImpl());
+        OfferFacade offerFacade = OfferFacadeConfiguration.createForTest(new InMemoryOfferRepositoryImpl(), new MockOfferClientImpl());
         OfferDto testOffer = OfferDto.builder()
                 .company("Company")
                 .position("Dev")
@@ -46,7 +47,7 @@ class JobOffersFacadeTest {
     @Test
     public void should_return_all_offers_from_database(){
         //given
-        OfferFacade offerFacade = new OfferFacade(new InMemoryOfferRepositoryImpl(), new MockOfferClientImpl());
+        OfferFacade offerFacade = OfferFacadeConfiguration.createForTest(new InMemoryOfferRepositoryImpl(), new MockOfferClientImpl());
         OfferDto testOffer = OfferDto.builder()
                 .company("Test")
                 .position("Dev")
@@ -80,7 +81,7 @@ class JobOffersFacadeTest {
     @Test
     public void should_return_offer_by_id(){
         //given
-        OfferFacade offerFacade = new OfferFacade(new InMemoryOfferRepositoryImpl(), new MockOfferClientImpl());
+        OfferFacade offerFacade = OfferFacadeConfiguration.createForTest(new InMemoryOfferRepositoryImpl(), new MockOfferClientImpl());
         OfferDto testOffer = OfferDto.builder()
                 .company("Company")
                 .position("Dev")
@@ -97,7 +98,7 @@ class JobOffersFacadeTest {
     @Test
     public void should_throw_exception_when_offer_not_found(){
         //given
-        OfferFacade offerFacade = new OfferFacade(new InMemoryOfferRepositoryImpl(), new MockOfferClientImpl());
+        OfferFacade offerFacade = OfferFacadeConfiguration.createForTest(new InMemoryOfferRepositoryImpl(), new MockOfferClientImpl());
         //when & then
         assertThatThrownBy(() -> offerFacade.findOfferById(1L))
                 .isInstanceOf(OfferNotFoundException.class)
@@ -107,7 +108,7 @@ class JobOffersFacadeTest {
     @Test
     public void should_fetch_and_save_all_offers_when_they_dont_exist(){
         //given
-        OfferFacade offerFacade = new OfferFacade(new InMemoryOfferRepositoryImpl(), new MockOfferClientImpl());
+        OfferFacade offerFacade = OfferFacadeConfiguration.createForTest(new InMemoryOfferRepositoryImpl(), new MockOfferClientImpl());
         OfferDto existingOffer = OfferDto.builder()
                 .company("Test")
                 .position("Dev")
