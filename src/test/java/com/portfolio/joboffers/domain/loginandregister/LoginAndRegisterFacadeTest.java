@@ -1,5 +1,6 @@
 package com.portfolio.joboffers.domain.loginandregister;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -7,7 +8,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class LoginAndRegisterFacadeTest {
     @Test
-    public void should_add_new_user_when_registration_is_success() {
+    @DisplayName("Should register user")
+    public void should_register_user() {
         //given
         LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterFacade(new InMemoryUserRepositoryImpl());
         UserDto testUser = new UserDto("testuser", "12345");
@@ -18,6 +20,7 @@ class LoginAndRegisterFacadeTest {
     }
 
     @Test
+    @DisplayName("Should throw exception when registration failed")
     public void should_throw_exception_when_registration_failed() {
         //given
         LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterFacade(new InMemoryUserRepositoryImpl());
@@ -29,7 +32,8 @@ class LoginAndRegisterFacadeTest {
     }
 
     @Test
-    public void should_be_success_when_user_exist_in_database() {
+    @DisplayName("Should find user by user name")
+    public void should_find_user_by_user_name() {
         //given
         LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterFacade(new InMemoryUserRepositoryImpl());
         UserDto testUser = new UserDto("testuser", "12345");
@@ -42,7 +46,8 @@ class LoginAndRegisterFacadeTest {
     }
 
     @Test
-    public void should_throw_exception_when_user_does_not_exist_in_database() {
+    @DisplayName("Should throw exception when user not found")
+    public void should_throw_exception_when_user_not_found() {
         //given
         LoginAndRegisterFacade loginAndRegisterFacade = new LoginAndRegisterFacade(new InMemoryUserRepositoryImpl());
         UserDto testUser = new UserDto("testuser", "12345");

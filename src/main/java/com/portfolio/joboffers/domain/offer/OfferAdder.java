@@ -13,7 +13,7 @@ class OfferAdder {
     Long addOffer(OfferDto offerDto) {
         String url = offerDto.offerUrl();
         if (repository.existByUrl(url)) {
-            throw new OfferAlreadyExistException("Offer with url: " + url + " already exist");
+            throw new OfferDuplicateKeyException("Offer with url: " + url + " already exist");
         }
         Offer offerToSave = mapOfferDtoToOffer(offerDto);
         return repository.save(offerToSave);
