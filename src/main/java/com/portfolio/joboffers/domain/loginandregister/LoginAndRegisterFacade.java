@@ -15,10 +15,7 @@ public class LoginAndRegisterFacade {
     public RegistrationResultDto register(final RegisterUserDto userDto) {
         User user = mapUserDtoToUser(userDto);
         var savedUser = userRepository.save(user);
-        return RegistrationResultDto.builder()
-                .id(savedUser.id())
-                .username(savedUser.username())
-                .build();
+        return mapUserToRegistrationResultDto(savedUser);
     }
 
     public UserDto findByUsername(final String username){

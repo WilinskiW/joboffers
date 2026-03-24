@@ -1,6 +1,7 @@
 package com.portfolio.joboffers.domain.loginandregister;
 
 import com.portfolio.joboffers.domain.loginandregister.dto.RegisterUserDto;
+import com.portfolio.joboffers.domain.loginandregister.dto.RegistrationResultDto;
 import com.portfolio.joboffers.domain.loginandregister.dto.UserDto;
 
 class UserMapper {
@@ -16,6 +17,13 @@ class UserMapper {
                 .id(user.id())
                 .username(user.username())
                 .password(user.password())
+                .build();
+    }
+
+    static RegistrationResultDto mapUserToRegistrationResultDto(final User user){
+        return RegistrationResultDto.builder()
+                .id(user.id())
+                .username(user.username())
                 .build();
     }
 }
