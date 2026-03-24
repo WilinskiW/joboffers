@@ -1,38 +1,59 @@
 package com.portfolio.joboffers.domain.offer;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
-class InMemoryOfferRepositoryImpl implements OfferRepository{
-    private final Map<Long, Offer> db = new HashMap<>();
-    private final AtomicInteger sequence_pos = new AtomicInteger(1);
+class InMemoryOfferRepositoryImpl implements OfferRepository {
+    Map<String, Offer> database = new ConcurrentHashMap<>();
 
     @Override
-    public Long save(final Offer offer) {
-        long id = sequence_pos.getAndIncrement();
-        db.put(id, offer);
-        return id;
+    public boolean existsByUrl(String url) {
+        long count = database.values()
+                .stream()
+                .filter(offer -> offer.offerUrl().equals(url))
+                .count();
+        return count == 1;
     }
 
     @Override
-    public List<Offer> findAll() {
-        return db.values()
-                .stream()
+    public Optional<Offer> findByOfferUrl(String offerUrl) {
+        return Optional.of(database.get(offerUrl));
+    }
+
+    @Override
+    public List<Offer> saveAll(List<Offer> offers) {
+        return offers.stream()
+                .map(this::save)
                 .toList();
     }
 
     @Override
-    public Optional<Offer> findById(Long id) {
-        return Optional.ofNullable(db.get(id));
+    public Optional<Offer> findById(String id) {
+        return Optional.ofNullable(database.get(id));
     }
 
     @Override
-    public boolean existByUrl(final String url) {
-        return db.values()
-                .stream()
-                .anyMatch(offer -> offer.offerUrl().equals(url));
+    public Offer save(Offer entity) {
+        if (database.values().stream().anyMatch(offer -> offer.offerUrl().equals(entity.offerUrl()))) {
+            throw new OfferDuplicateException(entity.offerUrl());
+        }
+        UUID id = UUID.randomUUID();
+        Offer offer = new Offer(
+                id.toString(),
+                entity.company(),
+                entity.position(),
+                entity.salary(),
+                entity.offerUrl()
+        );
+        database.put(id.toString(), offer);
+        return offer;
+    }
+
+    @Override
+    public List<Offer> findAll() {
+        return database.values().stream().toList();
     }
 }

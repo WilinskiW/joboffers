@@ -3,7 +3,7 @@ package com.portfolio.joboffers.domain.offer;
 import lombok.Builder;
 
 @Builder
-record Offer(Long id,
+record Offer(String id,
              String company,
              String position,
              String salary,

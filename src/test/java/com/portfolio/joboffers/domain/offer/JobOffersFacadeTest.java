@@ -1,143 +1,125 @@
 package com.portfolio.joboffers.domain.offer;
 
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import com.portfolio.joboffers.domain.offer.dto.JobOfferResponse;
+import com.portfolio.joboffers.domain.offer.dto.OfferRequestDto;
+import com.portfolio.joboffers.domain.offer.dto.OfferResponseDto;
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.catchThrowable;
 
 class JobOffersFacadeTest {
-    private OfferFacade facade;
-
-    @BeforeEach
-    void setUp() {
-        this.facade = OfferFacadeConfiguration.createForTest(new InMemoryOfferRepositoryImpl(), new MockOfferClientImpl());
-    }
-
 
     @Test
-    @DisplayName("Should save offers when urls are unique")
-    public void should_save_offers_when_urls_are_unique(){
-        //given
-        OfferDto testOffer = OfferDto.builder()
-                .company("Test")
-                .position("Dev")
-                .salary("10000-15000")
-                .offerUrl("https://example.com")
-                .build();
+    public void should_fetch_from_jobs_from_remote_and_save_all_offers_when_repository_is_empty() {
+        // given
+        OfferFacade offerFacade = new OfferFacadeTestConfiguration().offerFacadeForTests();
+        assertThat(offerFacade.findAllOffers()).isEmpty();
 
-        OfferDto testOffer2 = OfferDto.builder()
-                .company("Fetcher")
-                .position("Dev")
-                .salary("10000-15000")
-                .offerUrl("https://test.com")
-                .build();
+        // when
+        List<OfferResponseDto> result = offerFacade.fetchAllOffersAndSaveAllIfNotExists();
 
-        //when
-        Long savedOfferId = facade.saveOffer(testOffer);
-        Long savedOfferId2 = facade.saveOffer(testOffer2);
-        //then
-        assertThat(facade.findOfferById(savedOfferId).offerUrl()).isEqualTo(testOffer.offerUrl());
-        assertThat(facade.findOfferById(savedOfferId2).offerUrl()).isEqualTo(testOffer2.offerUrl());
+        // then
+        assertThat(result).hasSize(6);
     }
 
     @Test
-    @DisplayName("Should throw duplicate key exception when with offer url exists")
-    public void should_throw_duplicate_key_exception_when_with_offer_url_exists(){
-        //given
-        OfferDto testOffer = OfferDto.builder()
-                .company("Company")
-                .position("Dev")
-                .salary("10000-15000")
-                .offerUrl("https://example.com")
-                .build();
-        facade.saveOffer(testOffer);
-        //when & then
-        assertThatThrownBy(() -> facade.saveOffer(testOffer))
-                .isInstanceOf(OfferDuplicateKeyException.class)
-                .hasMessage("Offer with url: %s already exist", testOffer.offerUrl());
+    public void should_save_only_2_offers_when_repository_had_4_added_with_offer_urls() {
+        // given
+        OfferFacade offerFacade = new OfferFacadeTestConfiguration(
+                List.of(
+                        new JobOfferResponse("id", "id", "asds", "1"),
+                        new JobOfferResponse("assd", "id", "asds", "2"),
+                        new JobOfferResponse("asddd", "id", "asds", "3"),
+                        new JobOfferResponse("asfd", "id", "asds", "4"),
+                        new JobOfferResponse("Junior", "Comarch", "1000", "https://someurl.pl/5"),
+                        new JobOfferResponse("Mid", "Finanteq", "2000", "https://someother.pl/6")
+                )
+        ).offerFacadeForTests();
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "1"));
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "2"));
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "3"));
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "4"));
+        assertThat(offerFacade.findAllOffers()).hasSize(4);
 
+        // when
+        List<OfferResponseDto> response = offerFacade.fetchAllOffersAndSaveAllIfNotExists();
+
+        // then
+        assertThat(List.of(
+                        response.get(0).offerUrl(),
+                        response.get(1).offerUrl()
+                )
+        ).containsExactlyInAnyOrder("https://someurl.pl/5", "https://someother.pl/6");
     }
 
     @Test
-    @DisplayName("Should save 3 offers when there are no offers in database")
-    public void should_save_3_offers_when_there_are_no_offers_in_database(){
-        //given
-        OfferDto testOffer = OfferDto.builder()
-                .company("Test")
-                .position("Dev")
-                .salary("10000-15000")
-                .offerUrl("https://example.com")
-                .build();
+    public void should_save_4_offers_when_there_are_no_offers_in_database() {
+        // given
+        OfferFacade offerFacade = new OfferFacadeTestConfiguration(List.of()).offerFacadeForTests();
 
-        OfferDto testOffer2 = OfferDto.builder()
-                .company("Fetcher")
-                .position("Dev")
-                .salary("10000-15000")
-                .offerUrl("https://test.com")
-                .build();
+        // when
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "1"));
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "2"));
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "3"));
+        offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "4"));
 
-        OfferDto testOffer3 = OfferDto.builder()
-                .company("Company32")
-                .position("Dev")
-                .salary("10000-15000")
-                .offerUrl("https://example123.com")
-                .build();
-
-        facade.saveOffer(testOffer);
-        facade.saveOffer(testOffer2);
-        facade.saveOffer(testOffer3);
-        //when
-        List<OfferDto> offers = facade.findAllOffers();
-        //then
-        assertThat(offers.size()).isEqualTo(3);
+        // then
+        assertThat(offerFacade.findAllOffers()).hasSize(4);
     }
 
     @Test
-    @DisplayName("Should find offer by id when offer was saved")
-    public void should_find_offer_by_id_when_offer_was_saved(){
-        //given
-        OfferDto testOffer = OfferDto.builder()
-                .company("Company")
-                .position("Dev")
-                .salary("10000-15000")
-                .offerUrl("https://example.com")
-                .build();
-        facade.saveOffer(testOffer);
-        //when
-        OfferDto offer = facade.findOfferById(1L);
-        //then
-        assertThat(offer.offerUrl()).isEqualTo("https://example.com");
+    public void should_find_offer_by_id_when_offer_was_saved() {
+        // given
+        OfferFacade offerFacade = new OfferFacadeTestConfiguration(List.of()).offerFacadeForTests();
+        OfferResponseDto offerResponseDto = offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "1"));
+        // when
+        OfferResponseDto offerById = offerFacade.findOfferById(offerResponseDto.id());
+
+        // then
+        assertThat(offerById).isEqualTo(OfferResponseDto.builder()
+                .id(offerResponseDto.id())
+                .companyName("id")
+                .position("asds")
+                .salary("asdasd")
+                .offerUrl("1")
+                .build()
+        );
     }
 
     @Test
-    @DisplayName("Should throw exception when offer not found")
-    public void should_throw_exception_when_offer_not_found(){
-        //given
-        //when & then
-        assertThatThrownBy(() -> facade.findOfferById(1L))
+    public void should_throw_not_found_exception_when_offer_not_found() {
+        // given
+        OfferFacade offerFacade = new OfferFacadeTestConfiguration(List.of()).offerFacadeForTests();
+        assertThat(offerFacade.findAllOffers()).isEmpty();
+
+        // when
+        Throwable thrown = catchThrowable(() -> offerFacade.findOfferById("100"));
+
+        // then
+        AssertionsForClassTypes.assertThat(thrown)
                 .isInstanceOf(OfferNotFoundException.class)
-                .hasMessage("Offer with id: %d not found", 1L);
+                .hasMessage("Offer with id 100 not found");
     }
 
     @Test
-    @DisplayName("Should fetch and save all offers when they don't exist in repository")
-    public void should_fetch_and_save_all_offers_when_they_dont_exist_in_repository(){
-        //given
-        OfferDto existingOffer = OfferDto.builder()
-                .company("Test")
-                .position("Dev")
-                .salary("10000-15000")
-                .offerUrl("https://example.com")
-                .build();
-        facade.saveOffer(existingOffer);
-        //when
-        List<OfferDto> offers = facade.fetchAllOffersAndSaveAllIfNotExists();
-        //then
-        assertThat(offers.size()).isEqualTo(2L);
+    public void should_throw_duplicate_key_exception_when_with_offer_url_exists() {
+        // given
+        OfferFacade offerFacade = new OfferFacadeTestConfiguration(List.of()).offerFacadeForTests();
+        OfferResponseDto offerResponseDto = offerFacade.saveOffer(new OfferRequestDto("id", "asds", "asdasd", "hello.pl"));
+        String savedId = offerResponseDto.id();
+        assertThat(offerFacade.findOfferById(savedId).id()).isEqualTo(savedId);
+        // when
+        Throwable thrown = catchThrowable(() -> offerFacade.saveOffer(
+                new OfferRequestDto("cx", "vc", "xcv", "hello.pl")));
+
+        // then
+        AssertionsForClassTypes.assertThat(thrown)
+                .isInstanceOf(OfferDuplicateException.class)
+                .hasMessage("Offer with offerUrl [hello.pl] already exists");
     }
 }

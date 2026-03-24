@@ -1,7 +1,13 @@
 package com.portfolio.joboffers.domain.offer;
 
+import lombok.Getter;
+
+@Getter
 public class OfferNotFoundException extends RuntimeException {
-    public OfferNotFoundException(String message) {
-        super(message);
+    private final String offerId;
+
+    public OfferNotFoundException(String offerId) {
+        super(String.format("Offer with id %s not found", offerId));
+        this.offerId = offerId;
     }
 }

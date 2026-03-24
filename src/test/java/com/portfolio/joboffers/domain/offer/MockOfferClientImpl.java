@@ -1,31 +1,18 @@
 package com.portfolio.joboffers.domain.offer;
 
+import com.portfolio.joboffers.domain.offer.dto.JobOfferResponse;
+
 import java.util.List;
 
 class MockOfferClientImpl implements OfferFetchable{
+    List<JobOfferResponse> listOfOffers;
+
+    MockOfferClientImpl(List<JobOfferResponse> listOfOffers) {
+        this.listOfOffers = listOfOffers;
+    }
+
     @Override
-    public List<OfferDto> fetch() {
-        OfferDto testOffer = OfferDto.builder()
-                .company("Test")
-                .position("Dev")
-                .salary("10000-15000")
-                .offerUrl("https://example.com")
-                .build();
-
-        OfferDto testOffer2 = OfferDto.builder()
-                .company("Fetcher")
-                .position("Dev")
-                .salary("10000-15000")
-                .offerUrl("https://test.com")
-                .build();
-
-        OfferDto testOffer3 = OfferDto.builder()
-                .company("Company32")
-                .position("Dev")
-                .salary("10000-15000")
-                .offerUrl("https://example123.com")
-                .build();
-
-        return List.of(testOffer, testOffer2, testOffer3);
+    public List<JobOfferResponse> fetchOffers() {
+        return listOfOffers;
     }
 }

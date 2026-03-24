@@ -4,11 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 interface OfferRepository {
-    Long save(Offer offer);
+    Offer save(Offer offer);
 
     List<Offer> findAll();
 
-    Optional<Offer> findById(Long id);
+    List<Offer> saveAll(List<Offer> offers);
 
-    boolean existByUrl(String url);
+    Optional<Offer> findById(String id);
+
+    Optional<Offer> findByOfferUrl(String offerUrl);
+
+    boolean existsByUrl(String url);
 }
