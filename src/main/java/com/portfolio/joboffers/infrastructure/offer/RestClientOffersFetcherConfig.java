@@ -1,7 +1,6 @@
 package com.portfolio.joboffers.infrastructure.offer;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
@@ -10,6 +9,7 @@ import org.springframework.web.client.RestClient;
 @Configuration
 @AllArgsConstructor
 public class RestClientOffersFetcherConfig {
+    private final HttpClientOffersConfigurationProperties properties;
 
     @Bean
     public RestClientResponseErrorHandler restClientResponseErrorHandler() {
@@ -17,13 +17,11 @@ public class RestClientOffersFetcherConfig {
     }
 
     @Bean
-    public RestClient restClient(@Value("${http.client.config.connectTimeout}") int connectTimeout,
-                                 @Value("${http.client.config.readTimeout}") int readTimeout,
-                                 RestClientResponseErrorHandler restClientResponseErrorHandler) {
+    public RestClient restClient(RestClientResponseErrorHandler restClientResponseErrorHandler) {
 
         SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
-        requestFactory.setReadTimeout(connectTimeout);
-        requestFactory.setConnectTimeout(readTimeout);
+        requestFactory.setReadTimeout(properties.readTimeout());
+        requestFactory.setConnectTimeout(properties.connectTimeout());
 
         return RestClient.builder()
                 .requestFactory(requestFactory)
@@ -32,11 +30,8 @@ public class RestClientOffersFetcherConfig {
     }
 
     @Bean
-    public RestClientOffersFetcher restClientOffersFetcher(RestClient restClient,
-                                                           @Value("${http.client.config.uri}") String baseUrl,
-                                                           @Value("${http.client.config.port}") int port
-    ) {
-        return new RestClientOffersFetcher(restClient, baseUrl, port);
+    public RestClientOffersFetcher restClientOffersFetcher(RestClient restClient) {
+        return new RestClientOffersFetcher(restClient, properties.uri(), properties.port());
     }
 
 }
