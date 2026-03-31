@@ -2,11 +2,12 @@ package com.portfolio.joboffers.feature;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.portfolio.joboffers.BaseIntegrationTest;
+import com.portfolio.joboffers.SampleJobOfferResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 
-public class UserAccessOffersIntegrationTest extends BaseIntegrationTest {
+public class UserAccessOffersIntegrationTest extends BaseIntegrationTest implements SampleJobOfferResponse {
 
     @Test
     public void user_want_to_see_offers_but_have_to_be_logged_in_and_external_server_should_have_some_offers(){
@@ -16,7 +17,7 @@ public class UserAccessOffersIntegrationTest extends BaseIntegrationTest {
                 .willReturn(WireMock.aResponse()
                         .withStatus(HttpStatus.OK.value())
                         .withHeader("Content-Type", "application/json")
-                        .withBody("[]")));
+                        .withBody(bodyWithZeroOffers())));
 
 
         // step 2: scheduler ran 1st time and made GET to external server and system added 0 offers to database
