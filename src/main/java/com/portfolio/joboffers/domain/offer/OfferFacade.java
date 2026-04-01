@@ -3,9 +3,11 @@ package com.portfolio.joboffers.domain.offer;
 import com.portfolio.joboffers.domain.offer.dto.OfferRequestDto;
 import com.portfolio.joboffers.domain.offer.dto.OfferResponseDto;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 @AllArgsConstructor
 public class OfferFacade {
     private final OfferRepository offerRepository;

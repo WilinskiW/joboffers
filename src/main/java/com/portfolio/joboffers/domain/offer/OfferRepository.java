@@ -1,8 +1,11 @@
 package com.portfolio.joboffers.domain.offer;
 
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 interface OfferRepository {
     Offer save(Offer offer);
 

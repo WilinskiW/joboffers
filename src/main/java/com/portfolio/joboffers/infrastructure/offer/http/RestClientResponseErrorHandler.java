@@ -1,4 +1,4 @@
-package com.portfolio.joboffers.infrastructure.offer;
+package com.portfolio.joboffers.infrastructure.offer.http;
 
 import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpMethod;

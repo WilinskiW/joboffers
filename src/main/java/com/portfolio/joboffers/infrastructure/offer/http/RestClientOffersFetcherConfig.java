@@ -1,4 +1,4 @@
-package com.portfolio.joboffers.infrastructure.offer;
+package com.portfolio.joboffers.infrastructure.offer.http;
 
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
