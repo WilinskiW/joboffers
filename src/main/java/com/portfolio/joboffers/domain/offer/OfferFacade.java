@@ -2,13 +2,13 @@ package com.portfolio.joboffers.domain.offer;
 
 import com.portfolio.joboffers.domain.offer.dto.OfferRequestDto;
 import com.portfolio.joboffers.domain.offer.dto.OfferResponseDto;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class OfferFacade {
     private final OfferRepository offerRepository;
     private final OfferService service;

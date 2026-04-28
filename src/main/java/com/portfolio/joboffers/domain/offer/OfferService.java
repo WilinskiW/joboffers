@@ -1,13 +1,13 @@
 package com.portfolio.joboffers.domain.offer;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 class OfferService {
     private final OfferFetchable offerFetcher;
     private final OfferRepository offerRepository;

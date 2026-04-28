@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-interface OfferRepository {
+public interface OfferRepository {
     Offer save(Offer offer);
 
     List<Offer> findAll();

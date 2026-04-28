@@ -3,10 +3,11 @@ package com.portfolio.joboffers.domain.loginandregister;
 import com.portfolio.joboffers.domain.loginandregister.dto.RegisterUserDto;
 import com.portfolio.joboffers.domain.loginandregister.dto.RegistrationResultDto;
 import com.portfolio.joboffers.domain.loginandregister.dto.UserDto;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+
 import static com.portfolio.joboffers.domain.loginandregister.UserMapper.*;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LoginAndRegisterFacade {
     private final static String USERNAME_NOT_FOUND_MESSAGE = "Username not found";
 
