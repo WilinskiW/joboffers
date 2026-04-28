@@ -17,7 +17,7 @@ import tools.jackson.databind.ObjectMapper;
 
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = JobOffersApplication.class)
+@SpringBootTest(classes = JobOffersApplication.class)
 @AutoConfigureRestTestClient
 @ActiveProfiles("integration")
 @Testcontainers
@@ -29,7 +29,7 @@ public class BaseIntegrationTest {
     public RestTestClient testClient;
 
     @Container
-    public static final MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:latest"));
+    public static final MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:8.2.7"));
 
     @Autowired
     public ObjectMapper objectMapper;
@@ -41,7 +41,7 @@ public class BaseIntegrationTest {
 
     @DynamicPropertySource
     public static void propertyOverride(DynamicPropertyRegistry registry) {
-        registry.add("spring.data.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
+        registry.add("spring.mongodb.uri", mongoDBContainer::getReplicaSetUrl);
         registry.add("http.client.config.port", () -> wireMockServer.getPort());
         registry.add("http.client.config.uri", () -> WIRE_MOCK_HOST);
     }
